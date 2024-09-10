@@ -3,8 +3,6 @@
 
 #include "../Chapter 1/BagInterface.hpp"
 
-#endif
-
 template<class ItemType>
 class ArrayBag: public BagInterface<ItemType> {
     private:
@@ -108,3 +106,5 @@ int ArrayBag<ItemType>::getIndexOf(const ItemType& anItem) const {
     }
     return -1;
 }
+
+#endif
