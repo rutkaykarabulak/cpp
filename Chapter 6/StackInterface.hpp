@@ -6,7 +6,7 @@
 #define StackInterface_hpp
 
 template<class ItemType>
-class Stack {
+class StackInterface {
 public:
     /** Sees whether this stack is empty.
     @return True if the stack is empty, or false if not. */
