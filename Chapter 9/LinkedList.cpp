@@ -32,7 +32,7 @@ public:
 #endif
 
 template<class ItemType>
-LinkedList<ItemType>::LinkedList():head(nullptr), itemCount(0) {}
+LinkedList<ItemType>::LinkedList():head(new Node<ItemType>()), itemCount(0) {}
 
 template<class ItemType>
 LinkedList<ItemType>::~LinkedList() {
@@ -76,15 +76,10 @@ bool LinkedList<ItemType>::insert(int newPosition, const ItemType& newItem) {
         throw new std::logic_error("Invalid position");
     }
 
+    Node<ItemType>* prevNode = getNodeAt(newPosition - 1);
     Node<ItemType>* newNode = new Node<ItemType>(newItem);
-    if (newPosition == 1) {
-        newNode->setNext(head);
-        head = newNode;
-    } else {
-        Node<ItemType>* nodeBefore = getNodeAt(newPosition - 1);
-        newNode->setNext(nodeBefore->getNext());
-        nodeBefore->setNext(newNode);
-    }
+    newNode->setNext(prevNode->getNext());
+    prevNode->setNext(newNode);
 
     itemCount++;
     return true;
@@ -95,32 +90,20 @@ bool LinkedList<ItemType>::remove(int position) {
     if (!(1 <= position && position <= itemCount) || isEmpty()) {
         return false;
     }
-    Node<ItemType>* currentNode = head;
-    if (position == 1) {
-        head = head->getNext();
-        delete currentNode;
-        currentNode = nullptr;
-    } else {
-        Node<ItemType>* nodeBefore = getNodeAt(position - 1);
-        Node<ItemType>* nodeToDelete = nodeBefore->getNext();
-        nodeBefore->setNext(nodeToDelete->getNext());
-        delete nodeToDelete;
-    }
-
+    Node<ItemType>* prevNode = getNodeAt(position-1);
+    Node<ItemType>* nodeToDelete = prevNode->getNext();
+    prevNode->setNext(nodeToDelete->getNext());
+    
+    delete nodeToDelete;
     itemCount--;
     return true;
 }
 
 template<class ItemType>
 void LinkedList<ItemType>::clear() {
-    while (head != nullptr) {
-        Node<ItemType>* nextNode = head->getNext();
-        head->setNext(nullptr);
-        delete head;
-        head = nextNode;
+    while (!isEmpty()) {
+        remove(1);
     }
-    head = nullptr;
-    itemCount = 0;
 }
 
 template<class ItemType>
@@ -150,7 +133,7 @@ void LinkedList<ItemType>::setEntry(int position, const ItemType& newItem) {
 
 template<class ItemType>
 void LinkedList<ItemType>::display() const {
-    Node<ItemType>* currentNode = head;
+    Node<ItemType>* currentNode = head->getNext();
     while (currentNode != nullptr) {
         std::cout << currentNode->getItem() << " ";
         currentNode = currentNode->getNext();
@@ -159,15 +142,9 @@ void LinkedList<ItemType>::display() const {
 
 template<class ItemType>
 Node<ItemType>* LinkedList<ItemType>::getNodeAt(int position) const {
-    if (!(1 <= position && position <= itemCount + 1) || isEmpty()) {
-        throw new std::logic_error("Empty list or invalid position");
-    }
-
     Node<ItemType>* currentNode = head;
-    while (currentNode != nullptr && position > 1) {
+    for (int i=0; i < position; i++)
         currentNode = currentNode->getNext();
-        position--;
-    }
-
+    
     return currentNode;
 }
