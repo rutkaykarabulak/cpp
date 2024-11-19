@@ -127,8 +127,6 @@ int partition(int arr[], int first, int last) {
 
     pivotIndex = indexFromLeft;
     return pivotIndex;
-
-    return -1;
 }
 
 void quickSort(int arr[], int first, int last) {

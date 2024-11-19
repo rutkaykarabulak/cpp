@@ -23,6 +23,7 @@ public:
     @post The root’s data has been returned, and the binary tree is unchanged. 
     @return The data in the root of the binary tree. */
     virtual ItemType getRootData() const = 0;
+    /** Sets the given item to the root's item */
     virtual void setRootData(const ItemType &newItem) = 0;
     /** Adds a new node containing the given data to this binary tree. 
     @param newData The data for the new node.
@@ -45,7 +46,7 @@ public:
     @post The binary search tree is unchanged.
     @param anEntry The entry to find.
     @return True if the entry occurs in the tree, or false if not. */
-    virtual bool containts(const ItemType &anEntry) const = 0;
+    virtual bool contains(const ItemType &anEntry) const = 0;
 
     /** Traverses this binary tree in preorder (inorder, postorder) and calls the function visit once for each node.
     @param visit A client-defined function that performs an operation on or with the data in each visited node. */
