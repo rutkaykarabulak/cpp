@@ -45,6 +45,7 @@ public:
     void clear();
     ItemType getEntry(const ItemType &anItem) const;
     bool contains(const ItemType &anEntry) const;
+    void replace(const ItemType& anEntry, const ItemType& newEntry);
 
     void preorderTraverse(void visit(ItemType &)) const;
     void inorderTraverse(void visit(ItemType &)) const;
@@ -353,4 +354,14 @@ void BinaryNodeTree<ItemType>::postorder(void visit(ItemType &), TreeNode<ItemTy
         ItemType item = tree->getItem();
         visit(item);
     }
+}
+template <class ItemType>
+void BinaryNodeTree<ItemType>::replace(const ItemType& anEntry, const ItemType& newEntry) {
+    TreeNode<ItemType>* nodeToReplace = findNode(root, anEntry);
+
+    if (nodeToReplace == nullptr) {
+        add(newEntry);
+    } else [
+        nodeToReplace->setItem(newEntry);
+    ]
 }

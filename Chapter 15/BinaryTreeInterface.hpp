@@ -53,6 +53,11 @@ public:
     virtual void preorderTraverse(void visit(ItemType &)) const = 0;
     virtual void inorderTraverse(void visit(ItemType &)) const = 0;
     virtual void postorderTraverse(void visit(ItemType &)) const = 0;
+    
+    /**
+     * Replaces the anEntry with the given newEntry only if the anEntry exists. If does not, adds the newEntry to the ADT tree.
+     */
+    virtual void replace(const ItemType& anEntry, const ItemType& newEntry) = 0;
 };
 
 #endif

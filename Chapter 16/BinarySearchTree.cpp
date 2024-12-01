@@ -45,12 +45,12 @@ public:
     void clear();
     ItemType getEntry(const ItemType &anEntry) const;
     bool contains(const ItemType &anEntry) const;
+    void replace(const ItemType& anEntry, const ItemType& newEntry);
 
 
     void preorderTraverse(void visit(ItemType &)) const;
     void inorderTraverse(void visit(ItemType &)) const;
     void postorderTraverse(void visit(ItemType &)) const;
-    
 
 };
 #endif
@@ -240,12 +240,11 @@ TreeNode<ItemType>* BinarySearchTree<ItemType>::findNode(TreeNode<ItemType>* tre
     if (tree->getItem() == target) {
         return tree;
     } else {
-        TreeNode<ItemType>* result = findNode(tree->getRight(), target);
-        if (result == nullptr) {
-            result = findNode(tree->getLeft(), target);
+        if (tree->getItem() > target) {
+            return findNode(tree->getLeft(), target);
+        } else {
+            return findNode(tree->getRight(), target);
         }
-
-        return result;
     }
 }
 
@@ -299,5 +298,17 @@ void BinarySearchTree<ItemType>::postorder(void visit(ItemType &), TreeNode<Item
         postorder(visit, tree->getRight());
         ItemType item = tree->getItem();
         visit(item);
+    }
+}
+
+template<class ItemType>
+void BinarySearchTree<ItemType>::replace(const ItemType& anEntry, const ItemType& newEntry)  {
+    TreeNode<ItemType>* nodeToReplace = findNode(root, anEntry);
+
+    if (nodeToReplace == nullptr) {
+        add(newEntry);
+    } else {
+        remove(anEntry);
+        add(newEntry);
     }
 }
