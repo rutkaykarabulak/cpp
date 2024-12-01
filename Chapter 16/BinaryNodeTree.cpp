@@ -293,7 +293,7 @@ void BinaryNodeTree<ItemType>::clear()
 template <class ItemType>
 ItemType BinaryNodeTree<ItemType>::getEntry(const ItemType &anEntry) const
 {
-    return root->getItem();
+    return findNode(anEntry)->getItem();
 }
 
 template <class ItemType>
