@@ -20,6 +20,7 @@ private:
     bool isLeaf(int nodeIndex) const;
     void rebuildHeap(int index);
     void convertArrayToHeap();
+    int getHeightRecursive(int index) const;
     
 public:
     ArrayHeap();
@@ -111,8 +112,18 @@ ItemType ArrayHeap<ItemType>::peekTop() const {
 }
 
 template<class ItemType>
+int ArrayHeap<ItemType>::getHeightRecursive(int index) const {
+    if (index >= itemCount) {
+        return 0;
+    }
+
+    return 1 + std::max(getHeightRecursive((index * 2) + 1), getHeightRecursive((index * 2) + 2));
+}
+
+
+template<class ItemType>
 int ArrayHeap<ItemType>::getHeight() const {
-    return 0;
+    return getHeightRecursive(0);
 }
 
 template<class ItemType>
