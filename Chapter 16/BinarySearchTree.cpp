@@ -116,7 +116,7 @@ int BinarySearchTree<ItemType>::getNumberOfNodesRecursive(const TreeNode<ItemTyp
         return 0;
     }
 
-    return 1 + getNumberOfNodesRecursive(tree->getLeft()) + getNumberOfNodesRecursive(tree->getLeft());
+    return 1 + getNumberOfNodesRecursive(tree->getLeft()) + getNumberOfNodesRecursive(tree->getRight());
 }
 
 template<class ItemType>

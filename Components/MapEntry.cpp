@@ -55,7 +55,7 @@ void MapEntry<KeyType, ItemType>::setKey(const KeyType& newKey) {
 
 template<class KeyType, class ItemType>
 bool MapEntry<KeyType, ItemType>::operator==(const MapEntry<KeyType, ItemType>& rightHandItem) const {
-    return (key == rightHandItem.key && item == rightHandItem.item);
+    return key == rightHandItem.key;
 }
 
 template<class KeyType, class ItemType>
