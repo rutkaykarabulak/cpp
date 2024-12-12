@@ -33,7 +33,7 @@ public:
     @param searchKey The search key of the item to be retrieved. 
     @return The item associated with the search key.
     @throw NotFoundException if the item does not exist. */
-    virtual ItemType getItem(const KeyType &searchKey) const throw(NotFoundException) = 0;
+    virtual ItemType getItem(const KeyType &searchKey) const = 0;
     /** Sees whether this dictionary contains an item with a given search key.
     @post The dictionary is unchanged.
     @param searchKey The search key of the item to be retrieved. @return True if an item with the given search key exists in the
