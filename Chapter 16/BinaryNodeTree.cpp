@@ -22,8 +22,7 @@ protected:
     int getNumberOfNodesRecursive(const TreeNode<ItemType> *tree) const;
     TreeNode<ItemType> *balancedAdd(TreeNode<ItemType> *tree, TreeNode<ItemType> *newNode);
     TreeNode<ItemType> *findNode(TreeNode<ItemType> *tree, const ItemType &target) const;
-    TreeNode<ItemType> *moveValuesUpTree(TreeNode<ItemType> *tree);
-    TreeNode<ItemType> *removeValue(TreeNode<ItemType> *tree, const ItemType &target);
+    TreeNode<ItemType> *removeRecursive(TreeNode<ItemType> *tree, const ItemType &target);
 
     void preorder(void visit(ItemType &), TreeNode<ItemType> *tree) const;
     void inorder(void visit(ItemType &), TreeNode<ItemType> *tree) const;
@@ -173,49 +172,40 @@ TreeNode<ItemType> *BinaryNodeTree<ItemType>::findNode(TreeNode<ItemType> *tree,
     }
 }
 
-template <class ItemType>
-TreeNode<ItemType>* BinaryNodeTree<ItemType>::removeValue(TreeNode<ItemType>* tree, const ItemType& item) {
+template<class ItemType>
+TreeNode<ItemType>* BinaryNodeTree<ItemType>::removeRecursive(TreeNode<ItemType>* tree, const ItemType& anItem) {
     if (tree == nullptr) {
         return nullptr;
     }
-    if (tree->getItem() == item) {
+
+    if (tree->getItem() == anItem) {
         if (tree->isLeaf()) {
             delete tree;
-            if (tree == root) { // Special case: deleting the last node (root)
-                root = nullptr;
-            }
             tree = nullptr;
-        } else {
-            tree = moveValuesUpTree(tree);
+            return nullptr;
         }
+
+        if (tree->getLeft() == nullptr) {
+            TreeNode<ItemType>* temp = tree->getRight();
+            delete tree;
+            return temp;
+        } else if (tree->getRight() == nullptr) {
+            TreeNode<ItemType>* temp = tree->getLeft();
+            delete tree;
+            return temp;
+        } else {
+            TreeNode<ItemType>* successor = tree->getRight();
+            while (successor != nullptr && successor->getLeft()) {
+                successor = successor->getLeft();
+            }
+            tree->setItem(successor->getItem());
+            tree->setRight(removeRecursive(tree->getRight(), successor->getItem()));
+        }
+
     } else {
-        // Recursively call on the left and right subtrees, updating pointers
-        tree->setRight(removeValue(tree->getRight(), item));
-        tree->setLeft(removeValue(tree->getLeft(), item));
+        tree->setLeft(removeRecursive(tree->getLeft(), anItem));
+        tree->setRight(removeRecursive(tree->getRight(), anItem));
     }
-
-    return tree;
-}
-
-
-template <class ItemType>
-TreeNode<ItemType> *BinaryNodeTree<ItemType>::moveValuesUpTree(TreeNode<ItemType> *tree)
-{
-    if (tree == nullptr) {
-        return nullptr;
-    }else if (tree->getRight() != nullptr) {
-        tree->setItem(tree->getRight()->getItem());
-        tree->setRight(moveValuesUpTree(tree->getRight()));
-    } else if (tree->getLeft() != nullptr) {
-        tree->setItem(tree->getLeft()->getItem());
-        tree->setLeft(moveValuesUpTree(tree->getLeft()));
-    } else {
-        // leaf
-        delete tree;
-        tree = nullptr;
-        return nullptr;
-    }
-
     return tree;
 }
 
@@ -278,10 +268,11 @@ bool BinaryNodeTree<ItemType>::add(const ItemType &newItem)
     return true;
 }
 
-template <class ItemType>
-bool BinaryNodeTree<ItemType>::remove(const ItemType &anItem)
-{
-    return removeValue(root, anItem);
+template<class ItemType>
+bool BinaryNodeTree<ItemType>::remove(const ItemType& anItem) {
+    root = removeRecursive(root, anItem);
+
+    return root != nullptr;
 }
 
 template <class ItemType>
@@ -294,7 +285,13 @@ void BinaryNodeTree<ItemType>::clear()
 template <class ItemType>
 ItemType BinaryNodeTree<ItemType>::getEntry(const ItemType &anEntry) const
 {
-    return findNode(anEntry)->getItem();
+    TreeNode<ItemType>* node = findNode(root, anEntry);
+
+    if (node == nullptr) {
+        throw std::logic_error("There is no entry found with the given entry.");
+    }
+
+    return node->getItem();
 }
 
 template <class ItemType>
@@ -361,7 +358,7 @@ void BinaryNodeTree<ItemType>::replace(const ItemType& anEntry, const ItemType& 
 
     if (nodeToReplace == nullptr) {
         add(newEntry);
-    } else [
+    } else {
         nodeToReplace->setItem(newEntry);
-    ]
+    }
 }

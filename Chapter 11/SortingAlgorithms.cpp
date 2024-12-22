@@ -98,7 +98,7 @@ void sortFirstMidLast(int arr[], int first, int mid, int last) {
     if (arr[mid] > arr[last])
         std::swap(arr[mid], arr[last]);
     if (arr[first] > arr[mid])
-        std::swap(arr[first], arr[last]);
+        std::swap(arr[first], arr[mid]);
     
 }
 
