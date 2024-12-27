@@ -63,6 +63,7 @@ BinarySearchTree<ItemType>::BinarySearchTree() {
 template<class ItemType>
 BinarySearchTree<ItemType>::~BinarySearchTree() {
     clear();
+    root = nullptr;
 }
 
 template<class ItemType>
@@ -81,8 +82,8 @@ TreeNode<ItemType>* BinarySearchTree<ItemType>::copyTree(const TreeNode<ItemType
 
     if (tree != nullptr) {
         node = new TreeNode<ItemType>(tree->getItem());
-        node->setLeft(tree->getLeft());
-        node->setRight(tree->getRight());
+        node->setLeft(copyTree(tree->getLeft()));
+        node->setRight(copyTree(tree->getRight()));
     }
    return node;
 }
@@ -121,25 +122,32 @@ int BinarySearchTree<ItemType>::getNumberOfNodesRecursive(const TreeNode<ItemTyp
 
 template<class ItemType>
 ItemType BinarySearchTree<ItemType>::getRootData() const {
+    if (isEmpty()) {
+        throw std::invalid_argument("Tree is empty");
+    }
     return root->getItem();
 }
 template<class ItemType>
 void BinarySearchTree<ItemType>::setRootData(const ItemType& newItem) {
+    if (root == nullptr) {
+        root = new TreeNode<ItemType>(newItem);
+        return;
+    }
+    if (root->getLeft() != nullptr && newItem <= root->getLeft()->getItem() || 
+        root->getRight() != nullptr && newItem >= root->getRight()->getItem()) {
+        throw std::logic_error("BST variant is violated, set root data is failed.");
+    }
     root->setItem(newItem);
 }
 
 template<class ItemType>
 bool BinarySearchTree<ItemType>::add(const ItemType& newItem) {
-    insertInOrder(newItem, root);
+    root = insertInOrder(newItem, root);
     return true;
 }
 
 template<class ItemType>
 TreeNode<ItemType>* BinarySearchTree<ItemType>::insertInOrder(const ItemType& newItem, TreeNode<ItemType>* tree) {
-    if (root == nullptr) {
-        root = new TreeNode<ItemType>(newItem); // special case
-        return root;
-    }
     if (tree == nullptr) {
         return new TreeNode<ItemType>(newItem);
     }
@@ -260,6 +268,7 @@ void BinarySearchTree<ItemType>::preorder(void visit(ItemType &), TreeNode<ItemT
     if (tree != nullptr)
     {
         ItemType item = tree->getItem();
+        visit(item);
         preorder(visit, tree->getLeft());
         preorder(visit, tree->getRight());
     }
