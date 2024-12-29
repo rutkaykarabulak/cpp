@@ -68,7 +68,7 @@ BinaryNodeTree<ItemType>::BinaryNodeTree(const ItemType &rootItem)
 template <class ItemType>
 BinaryNodeTree<ItemType>::BinaryNodeTree(const ItemType &rootItem, const BinaryNodeTree<ItemType> *leftTree, const BinaryNodeTree<ItemType> *rightTree)
 {
-    root = new TreeNode<ItemType>(rootItem, copyTree(leftTree), copyTree(rightTree));
+    root = new TreeNode<ItemType>(rootItem, copyTree(leftTree->root), copyTree(rightTree->root));
 }
 
 template <class ItemType>

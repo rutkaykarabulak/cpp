@@ -33,7 +33,7 @@ protected:
 public:
     BinarySearchTree();
     BinarySearchTree(const ItemType& rootItem);
-    BinarySearchTree(const ItemType& rootItem, const TreeNode<ItemType> *leftTree, const TreeNode<ItemType> *rightTree);
+    BinarySearchTree(const ItemType& rootItem, const BinarySearchTree<ItemType>* leftTree, const BinarySearchTree<ItemType>* rightTree);
     ~BinarySearchTree();
     bool isEmpty() const;
     int getHeight() const;
@@ -72,8 +72,8 @@ BinarySearchTree<ItemType>::BinarySearchTree(const ItemType& rootItem) {
 }
 
 template<class ItemType>
-BinarySearchTree<ItemType>::BinarySearchTree(const ItemType& rootItem, const TreeNode<ItemType> *leftTree, const TreeNode<ItemType> *rightTree) {
-    root = new TreeNode<ItemType>(rootItem, copyTree(leftTree), copyTree(rightTree));
+BinarySearchTree<ItemType>::BinarySearchTree(const ItemType& rootItem, const BinarySearchTree<ItemType> *leftTree, const BinarySearchTree<ItemType> *rightTree) {
+    root = new TreeNode<ItemType>(rootItem, copyTree(leftTree->root), copyTree(rightTree->root));
 }
 
 template<class ItemType>
