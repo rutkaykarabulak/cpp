@@ -12,7 +12,8 @@ template<class ItemType>
 class ArrayHeap: public HeapInterface<ItemType> {
 private:
     ItemType* items;
-    int itemCount;
+    int       itemCount;
+    int       maxSize;
 
     int getLeftChildIndex(int nodeIndex) const;
     int getRightChildIndex(int nodeIndex) const;
@@ -21,6 +22,7 @@ private:
     void rebuildHeap(int index);
     void convertArrayToHeap();
     int getHeightRecursive(int index) const;
+    void bubbleUp(int index);
     
 public:
     ArrayHeap();
@@ -41,6 +43,7 @@ template<class ItemType>
 ArrayHeap<ItemType>::ArrayHeap() {
     items = new ItemType[MAX_ITEM_COUNT];
     itemCount = 0;
+    maxSize = MAX_ITEM_COUNT;
 }
 
 template<class ItemType>
@@ -48,11 +51,13 @@ ArrayHeap<ItemType>::ArrayHeap(const ItemType& root) {
     items = new ItemType[MAX_ITEM_COUNT];
     items[0] = root; 
     itemCount = 1;
+    maxSize = MAX_ITEM_COUNT;
 }
 template<class ItemType>
 ArrayHeap<ItemType>::ArrayHeap(const ItemType arr[], int itemSize) {
     items = new ItemType[itemSize * 2];
     itemCount = itemSize;
+    maxSize = itemSize;
 
     for (int i=0; i < itemSize; i++) {
         items[i] = arr[i];
@@ -62,7 +67,7 @@ ArrayHeap<ItemType>::ArrayHeap(const ItemType arr[], int itemSize) {
 }
 template<class ItemType>
 void ArrayHeap<ItemType>::convertArrayToHeap() {
-    for (int i=itemCount/2 - 1; i >= 0; i--) {
+    for (int i=itemCount/2; i >= 0; i--) {
         rebuildHeap(i);
     }
 }
@@ -140,13 +145,14 @@ bool ArrayHeap<ItemType>::remove() {
 
 template<class ItemType>
 void ArrayHeap<ItemType>::rebuildHeap(int index) {
-    int leftChildIndex = (2 * index) + 1;
-    int rightChildIndex = (2  * index)+ 2;
-    
-    bool leftExists = (leftChildIndex < itemCount);
-    bool rightExists = (rightChildIndex < itemCount);
-    if (leftExists || rightExists) {
-        int largerChildIndex = leftExists ?  leftChildIndex : rightChildIndex;
+    if (!isLeaf(index)) {
+        int leftChildIndex = getLeftChildIndex(index);
+        int rightChildIndex = getRightChildIndex(index);
+
+        bool leftExists = (leftChildIndex < itemCount);
+        bool rightExists = (rightChildIndex < itemCount);
+
+        int largerChildIndex = leftChildIndex;
 
         if (leftExists && rightExists) {
             largerChildIndex = items[leftChildIndex] > items[rightChildIndex] ? leftChildIndex : rightChildIndex; 
@@ -161,16 +167,24 @@ void ArrayHeap<ItemType>::rebuildHeap(int index) {
 
 template<class ItemType>
 bool ArrayHeap<ItemType>::add(const ItemType& newItem) {
-    if (itemCount >= MAX_ITEM_COUNT) {
+    if (itemCount >= maxSize) {
         ItemType* newArray = new ItemType[itemCount * 2];
         for (int i=0; i < itemCount; i++)
             newArray[i] = items[i];
-        delete items;
+        maxSize *= 2;
+        delete[] items;
         items = newArray;
         newArray = nullptr;
     }
     items[itemCount] = newItem;
-    int index = itemCount;
+    bubbleUp(itemCount);
+
+    itemCount++;
+    return true;
+}
+
+template<class ItemType>
+void ArrayHeap<ItemType>::bubbleUp(int index) {
     int parentIndex = (index - 1) / 2;
 
     while (index > 0 && items[index] > items[parentIndex]) {
@@ -178,9 +192,6 @@ bool ArrayHeap<ItemType>::add(const ItemType& newItem) {
         index = parentIndex;
         parentIndex = (index - 1 ) / 2;
     }
-
-    itemCount++;
-    return true;
 }
 
 template<class ItemType>
